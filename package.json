@@ -1,0 +1,19 @@
+{
+  "name": "nyrr-results-api",
+  "version": "1.0.1",
+  "description": "",
+  "main": "build/index.js",
+  "scripts": {
+    "build": "npx tsc"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "typescript": "^4.8.3",
+    "zod": "^3.19.1"
+  },
+  "dependencies": {
+    "axios": "^0.27.2"
+  }
+}
