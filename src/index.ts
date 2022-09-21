@@ -1,8 +1,6 @@
 import axios from "axios";
 import z from "zod";
 
-type getYearsResponse = Promise<number[]>;
-
 const teamEventDetailsSchema = z.object({
   distanceName: z.string(),
   distanceUnitCode: z.string(),
@@ -57,6 +55,10 @@ type TeamResults = z.infer<typeof teamResultsSchema>;
 type ClubScorer = z.infer<typeof clubScorerSchema>;
 type TeamEventDetails = z.infer<typeof teamEventDetailsSchema>;
 
+type getYearsResponse = Promise<number[]>;
+type getDivisionsResultsResponse = Promise<DivisionResults[]>;
+type getDivisionResults = Promise<TeamResults[]>;
+
 export default class NyrrApi {
   token:string;
   baseUrl = 'https://results.nyrr.org/api';
@@ -74,9 +76,9 @@ export default class NyrrApi {
     return data;
   }
 
-  async getDivisionsResults (year:number) : Promise<DivisionResults[]> {
+  async getDivisionsResults (year:number) : getDivisionsResultsResponse {
     const response = await this.postWithNyrrToken(
-      'https://results.nyrr.org/api/ClubStandings/getDivisionsResults', 
+      'ClubStandings/getDivisionsResults', 
       { 
         year,
       }
@@ -88,9 +90,9 @@ export default class NyrrApi {
     return data;
   }
 
-  async getDivisionResults (divisionCode:string, year:number) : Promise<TeamResults[]> {
+  async getDivisionResults (divisionCode:string, year:number) : getDivisionResults {
     const response = await this.postWithNyrrToken(
-      'https://results.nyrr.org/api/ClubStandings/getDivisionResults', 
+      'ClubStandings/getDivisionResults', 
       { 
         year,
         divisionCode,
