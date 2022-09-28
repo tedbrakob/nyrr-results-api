@@ -105,6 +105,15 @@ export default class NyrrApi {
     return data;
   }
 
+  static async getToken() : Promise<string> {
+    const response = await axios.get('https://results.nyrr.org/GetSettings/rms-settings.rjs');
+
+    const jsonResponse = response.data.replace('var settings = ', '');
+    const data = JSON.parse(jsonResponse);
+
+    return data.token;
+  }
+
   async postWithNyrrToken(endpoint:string, data:object) {
     const url = `${this.baseUrl}/${endpoint}`
 
