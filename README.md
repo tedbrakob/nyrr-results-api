@@ -1,11 +1,11 @@
-#nyrr-results-api
+# nyrr-results-api
 
-####Installation
+#### Installation
 ```
 npm install nyrr-results-api
 ```
 
-####Example Usage
+#### Example Usage
 ```
 import NyrrApi from "nyrr-results-api";
 
@@ -20,7 +20,7 @@ const nyrrApi = new NyrrApi(token);
 const divisionResults = await nyrrApi.getDivisionResults("AM", 2022);
 ```
 
-###Token
+### Token
 The api at results.nyrr.org/api requires a token.  This token is not issued on a per-app basis, there is only one token.  For the time I've been working on this api wrapper it has not changed from below:
 
 `898d6b6aef0e4887`
@@ -33,7 +33,7 @@ I've included the static `getToken()` function to get an up-to-date token.  This
 
 Once the token is obtained, pass that as a parameter to the constructor.
 
-###Available functions
+### Available functions
 All functions of `NyrrApi` return a promise that resolves to a value described below:
 
 * `getYears()`

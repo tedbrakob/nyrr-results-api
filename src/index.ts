@@ -1,5 +1,5 @@
 import axios from "axios";
-import z from "zod";
+import { z } from "zod";
 
 const teamEventDetailsSchema = z.object({
   distanceName: z.string(),
