@@ -1,64 +1,12 @@
 import axios from "axios";
 import { z } from "zod";
-
-const teamEventDetailsSchema = z.object({
-  distanceName: z.string(),
-  distanceUnitCode: z.string(),
-  eventCode: z.string(),
-  eventName: z.string(),
-  isClubPointsPublished: z.boolean(),
-  isPointsReallyExists: z.boolean(),
-  isTeamAwardExists: z.boolean(),
-  logoImageExtension: z.string().nullable(),
-  logoImageId: z.number().nullable(),
-  points: z.number().nullable(),
-  startDateTime: z.string(),
-});
-
-const teamResultsSchema = z.object({
-  teamCode: z.string(),
-  teamName: z.string(),
-  teamPlace: z.number(),
-  totalPoints: z.number(),
-  eventDetails: z.array(
-    teamEventDetailsSchema,
-  ).optional(),
-});
-
-const divisionResultsSchema = z.object({
-  divisionCode: z.string(),
-  divisionGender: z.enum(["M", "F", "X"]),
-  divisionName: z.string(),
-  divisionOrder: z.number(),
-  teamResults: z.array(
-    teamResultsSchema,
-  ),
-});
-
-const clubScorerSchema = z.object({
-  runnerId: z.number(),
-  firstName: z.string(),
-  lastName: z.string(),
-  bib: z.string(),
-  gender: z.string(),
-  age: z.number(),
-  city: z.string(),
-  stateProvince: z.string(),
-  country: z.string(),
-  iaaf: z.string(),
-  finishTime: z.string(),
-  finishPlace: z.number(),
-});
-
-type DivisionResults = z.infer<typeof divisionResultsSchema>;
-type TeamResults = z.infer<typeof teamResultsSchema>;
-type ClubScorer = z.infer<typeof clubScorerSchema>;
-type TeamEventDetails = z.infer<typeof teamEventDetailsSchema>;
+import { DivisionResults, divisionResultsSchema, TeamAwardRunners, teamAwardRunnersSchema, TeamAwards, teamAwardsSchema, TeamResults, teamResultsSchema } from "./types";
 
 type getYearsResponse = Promise<number[]>;
 type getDivisionsResultsResponse = Promise<DivisionResults[]>;
 type getDivisionResults = Promise<TeamResults[]>;
-
+type getTeamAwards = Promise<TeamAwards[]>;
+type getTeamAwardRunners = Promise<TeamAwardRunners[]>;
 export default class NyrrApi {
   token:string;
   baseUrl = 'https://results.nyrr.org/api';
@@ -101,6 +49,76 @@ export default class NyrrApi {
 
     const data = response.data.response.items;
     z.array(teamResultsSchema).parse(data);
+
+    return data;
+  }
+
+  async getTeamAwards (
+    eventCode:string, 
+    teamCode:string, 
+    gender:string | null = null, 
+    minimumAge:number | null = null
+  ) : getTeamAwards {
+    const postData : {
+      eventCode:string, 
+      teamCode:string, 
+      gender?:string, 
+      minimumAge?:string,
+    } = {
+      eventCode,
+      teamCode,
+    };
+
+    if (gender !== null) {
+      postData.gender = gender;
+    }
+
+    if (minimumAge !== null) {
+      postData.minimumAge = minimumAge.toString();
+    }
+
+    const response = await this.postWithNyrrToken(
+      'awards/teamAwards',
+      postData
+    );
+
+    const data = response.data.response.items;
+    z.array(teamAwardsSchema).parse(data);
+
+    return data;
+  }
+
+  async getTeamAwardRunners (
+    eventCode:string, 
+    teamCode:string, 
+    teamGender:string | null = null, 
+    teamMinimumAge:number | null = null
+  ) : getTeamAwardRunners {
+    const postData : {
+      eventCode:string, 
+      teamCode:string, 
+      teamGender?:string, 
+      teamMinimumAge?:string,
+    } = {
+      eventCode,
+      teamCode,
+    };
+
+    if (teamGender !== null) {
+      postData.teamGender = teamGender;
+    }
+
+    if (teamMinimumAge !== null) {
+      postData.teamMinimumAge = teamMinimumAge.toString();
+    }
+
+    const response = await this.postWithNyrrToken(
+      'awards/teamAwardRunners',
+      postData
+    );
+
+    const data = response.data.response.items;
+    z.array(teamAwardRunnersSchema).parse(data);
 
     return data;
   }
