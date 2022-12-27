@@ -40,6 +40,8 @@ All functions of `NyrrApi` return a promise that resolves to a value described b
   * Get the list of years with team standings available.
 * `getDivisionsResults(year:number)`
   * Get a list of all divisions with team standings for a given year
+* `getTeams(year:number)`
+  * Get a list of all teams available for a given year
 * `getDivisionResults(divisionCode:string, year:number)`
   * Get a list of team results for a given division and year.  This includes team points for each race
 * ```
