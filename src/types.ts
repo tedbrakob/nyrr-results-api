@@ -62,23 +62,14 @@ export const teamAwardRunnersSchema = z.object({
   "finishPlace": z.number(),
 });
 
-// export const clubScorerSchema = z.object({
-//   runnerId: z.number(),
-//   firstName: z.string(),
-//   lastName: z.string(),
-//   bib: z.string(),
-//   gender: z.string(),
-//   age: z.number(),
-//   city: z.string(),
-//   stateProvince: z.string(),
-//   country: z.string(),
-//   iaaf: z.string(),
-//   finishTime: z.string(),
-//   finishPlace: z.number(),
-// });
+export const teamSchema = z.object({
+  teamCode: z.string(),
+  teamName: z.string(),
+});
 
 export type DivisionResults = z.infer<typeof divisionResultsSchema>;
 export type TeamResults = z.infer<typeof teamResultsSchema>;
 export type TeamEventDetails = z.infer<typeof teamEventDetailsSchema>;
 export type TeamAwards = z.infer<typeof teamAwardsSchema>;
 export type TeamAwardRunners = z.infer<typeof teamAwardRunnersSchema>;
+export type Team = z.infer<typeof teamSchema>;

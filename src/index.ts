@@ -1,12 +1,13 @@
 import axios from "axios";
 import { z } from "zod";
-import { DivisionResults, divisionResultsSchema, TeamAwardRunners, teamAwardRunnersSchema, TeamAwards, teamAwardsSchema, TeamResults, teamResultsSchema } from "./types";
+import { DivisionResults, divisionResultsSchema, TeamAwardRunners, teamAwardRunnersSchema, TeamAwards, teamAwardsSchema, TeamResults, teamResultsSchema, Team, teamSchema } from "./types";
 
 type getYearsResponse = Promise<number[]>;
 type getDivisionsResultsResponse = Promise<DivisionResults[]>;
 type getDivisionResults = Promise<TeamResults[]>;
 type getTeamAwards = Promise<TeamAwards[]>;
 type getTeamAwardRunners = Promise<TeamAwardRunners[]>;
+type getTeams = Promise<Team[]>;
 export default class NyrrApi {
   token:string;
   baseUrl = 'https://results.nyrr.org/api';
@@ -121,6 +122,18 @@ export default class NyrrApi {
     z.array(teamAwardRunnersSchema).parse(data);
 
     return data;
+  }
+
+  async getTeams (year:number) : getTeams {
+    const response = await this.postWithNyrrToken(
+      'ClubStandings/getTeams',
+      { year }
+    );
+
+    const data = response.data.response.items;
+    z.array(teamSchema).parse(data);
+
+    return data
   }
 
   static async getToken() : Promise<string> {
