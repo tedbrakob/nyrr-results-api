@@ -1,57 +1,29 @@
-import axios from "axios";
-import { z } from "zod";
-import { DivisionResults, divisionResultsSchema, TeamAwardRunners, teamAwardRunnersSchema, TeamAwards, teamAwardsSchema, TeamResults, teamResultsSchema, Team, teamSchema } from "./types";
+import HttpHandler from "./httpHandler";
+import * as clubStandings from "./clubStandings";
+import * as awards from "./awards";
+import * as events from "./events";
 
-type getYearsResponse = Promise<number[]>;
-type getDivisionsResultsResponse = Promise<DivisionResults[]>;
-type getDivisionResults = Promise<TeamResults[]>;
-type getTeamAwards = Promise<TeamAwards[]>;
-type getTeamAwardRunners = Promise<TeamAwardRunners[]>;
-type getTeams = Promise<Team[]>;
 export default class NyrrApi {
-  token:string;
-  baseUrl = 'https://results.nyrr.org/api';
+  httpHandler: HttpHandler;
 
   constructor(token:string) {
-    this.token = token;
+    this.httpHandler = new HttpHandler(token);
   }
 
-  async getYears() : getYearsResponse {
-    const response = await this.postWithNyrrToken('ClubStandings/getYears', {});
-
-    const data = response.data.response.items;
-    z.array(z.number()).parse(data);
-
-    return data;
+  async getYears() : clubStandings.getYears {
+    return await clubStandings.getYears(this.httpHandler);
   }
 
-  async getDivisionsResults (year:number) : getDivisionsResultsResponse {
-    const response = await this.postWithNyrrToken(
-      'ClubStandings/getDivisionsResults', 
-      { 
-        year,
-      }
-    );
-
-    const data = response.data.response.items;
-    z.array(divisionResultsSchema).parse(data);
-
-    return data;
+  async getDivisionsResults (year:number) : clubStandings.getDivisionsResults {
+    return await clubStandings.getDivisionsResults(this.httpHandler, year);
   }
 
-  async getDivisionResults (divisionCode:string, year:number) : getDivisionResults {
-    const response = await this.postWithNyrrToken(
-      'ClubStandings/getDivisionResults', 
-      { 
-        year,
-        divisionCode,
-      }
-    );
+  async getDivisionResults (divisionCode:string, year:number) : clubStandings.getDivisionResults {
+    return await clubStandings.getDivisionResults(this.httpHandler, divisionCode, year);
+  }
 
-    const data = response.data.response.items;
-    z.array(teamResultsSchema).parse(data);
-
-    return data;
+  async getTeams (year:number) : clubStandings.getTeams {
+    return await clubStandings.getTeams(this.httpHandler, year);
   }
 
   async getTeamAwards (
@@ -59,34 +31,8 @@ export default class NyrrApi {
     teamCode:string, 
     gender:string | null = null, 
     minimumAge:number | null = null
-  ) : getTeamAwards {
-    const postData : {
-      eventCode:string, 
-      teamCode:string, 
-      gender?:string, 
-      minimumAge?:string,
-    } = {
-      eventCode,
-      teamCode,
-    };
-
-    if (gender !== null) {
-      postData.gender = gender;
-    }
-
-    if (minimumAge !== null) {
-      postData.minimumAge = minimumAge.toString();
-    }
-
-    const response = await this.postWithNyrrToken(
-      'awards/teamAwards',
-      postData
-    );
-
-    const data = response.data.response.items;
-    z.array(teamAwardsSchema).parse(data);
-
-    return data;
+  ) : awards.getTeamAwards {
+    return await awards.getTeamAwards(this.httpHandler, eventCode, teamCode, gender, minimumAge);
   }
 
   async getTeamAwardRunners (
@@ -94,67 +40,19 @@ export default class NyrrApi {
     teamCode:string, 
     teamGender:string | null = null, 
     teamMinimumAge:number | null = null
-  ) : getTeamAwardRunners {
-    const postData : {
-      eventCode:string, 
-      teamCode:string, 
-      teamGender?:string, 
-      teamMinimumAge?:string,
-    } = {
-      eventCode,
-      teamCode,
-    };
-
-    if (teamGender !== null) {
-      postData.teamGender = teamGender;
-    }
-
-    if (teamMinimumAge !== null) {
-      postData.teamMinimumAge = teamMinimumAge.toString();
-    }
-
-    const response = await this.postWithNyrrToken(
-      'awards/teamAwardRunners',
-      postData
-    );
-
-    const data = response.data.response.items;
-    z.array(teamAwardRunnersSchema).parse(data);
-
-    return data;
+  ) : awards.getTeamAwardRunners {
+    return await awards.getTeamAwardRunners(this.httpHandler, eventCode, teamCode, teamGender, teamMinimumAge);
   }
 
-  async getTeams (year:number) : getTeams {
-    const response = await this.postWithNyrrToken(
-      'ClubStandings/getTeams',
-      { year }
-    );
-
-    const data = response.data.response.items;
-    z.array(teamSchema).parse(data);
-
-    return data
+  async eventsSearch (
+    year: number | null = null,
+    searchString:string = "",
+    distance: string | null = null,
+  ) : events.search {
+    return await events.search(this.httpHandler, year, searchString, distance);
   }
 
-  static async getToken() : Promise<string> {
-    const response = await axios.get('https://results.nyrr.org/GetSettings/rms-settings.rjs');
-
-    const jsonResponse = response.data.replace('var settings = ', '');
-    const data = JSON.parse(jsonResponse);
-
-    return data.token;
-  }
-
-  async postWithNyrrToken(endpoint:string, data:object) {
-    const url = `${this.baseUrl}/${endpoint}`
-
-    const response = await axios.post(url, data, {
-      headers: {
-        'content-type': 'application/json;charset=UTF-8',
-        'token': this.token,
-      }
-    });
-
-    return response;
+  static async getToken () : Promise<string> {
+    return await HttpHandler.getToken();
   }
 }
