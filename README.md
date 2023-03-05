@@ -48,5 +48,11 @@ All functions of `NyrrApi` return a promise that resolves to a value described b
   ```
   * Get a list of team results for a given division and year.  This includes team points for each race
   * This endpoint accepts a gender and minimum age rather than a division code.  For example, to get the team's open men division, pass `teamGender = "M"` and `teamMinimumAge = 0`.
-
-More coming soon...
+* ```
+  searchEvents(
+    year:number | null = null, 
+    searchString:string = "", 
+    distance: string | null = null, 
+  )
+  ```
+  * Get a list of all past events matching the search parameters

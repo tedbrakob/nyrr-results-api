@@ -49,9 +49,9 @@ export const search = async (
   const data = response.data.items;
   z.array(eventSchema).parse(data);
 
-  if (response.data.response.totalItems > defaultPageSize) {
+  if (response.data.totalItems > defaultPageSize) {
     postData.pageIndex += defaultPageSize;
-    postData.pageSize = response.data.response.totalItems - defaultPageSize;
+    postData.pageSize = response.data.totalItems - defaultPageSize;
 
     const additionalEventsResponse = await postToNyrr(
       `${endpoint}/search`,
