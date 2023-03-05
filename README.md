@@ -25,7 +25,7 @@ The api at results.nyrr.org/api requires a token.  This token is not issued on a
 
 `898d6b6aef0e4887`
 
-I've included the static `getToken()` function to get an up-to-date token.  This won't work from the frontend due to the CORS policy on the resource the token in retrieved from.  This function must be called from your own backend and passed along to the frontend.
+I've included the static `getToken()` function to get an up-to-date token.  This won't work from the frontend due to the CORS policy on the resource the token is retrieved from.  This function must be called from your own backend and passed along to the frontend.
 
 ```
   const token = await NyrrApi.getToken();
