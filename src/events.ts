@@ -1,5 +1,5 @@
 import { z } from "zod";
-import HttpHandler from "./httpHandler";
+import postToNyrr from "./postToNyrr";
 
 const endpoint = 'events';
 
@@ -27,7 +27,6 @@ export type Event = z.infer<typeof eventSchema>;
 
 export type search = Promise<Event[]>;
 export const search = async (
-  httpHandler:HttpHandler,
   year: number | null = null,
   searchString:string = "",
   distance: string | null = null,
@@ -42,7 +41,7 @@ export const search = async (
     pageSize: defaultPageSize,
   };
 
-  const response = await httpHandler.postWithNyrrToken(
+  const response = await postToNyrr(
     `${endpoint}/search`,
     postData,
   );
@@ -54,7 +53,7 @@ export const search = async (
     postData.pageIndex += defaultPageSize;
     postData.pageSize = response.data.response.totalItems - defaultPageSize;
 
-    const additionalEventsResponse = await httpHandler.postWithNyrrToken(
+    const additionalEventsResponse = await postToNyrr(
       `${endpoint}/search`,
       postData,
     );

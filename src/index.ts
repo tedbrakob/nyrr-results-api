@@ -1,29 +1,22 @@
-import HttpHandler from "./httpHandler";
 import * as clubStandings from "./clubStandings";
 import * as awards from "./awards";
 import * as events from "./events";
 
 export default class NyrrApi {
-  httpHandler: HttpHandler;
-
-  constructor(token:string) {
-    this.httpHandler = new HttpHandler(token);
-  }
-
   async getYears() : clubStandings.getYears {
-    return await clubStandings.getYears(this.httpHandler);
+    return await clubStandings.getYears();
   }
 
   async getDivisionsResults (year:number) : clubStandings.getDivisionsResults {
-    return await clubStandings.getDivisionsResults(this.httpHandler, year);
+    return await clubStandings.getDivisionsResults(year);
   }
 
   async getDivisionResults (divisionCode:string, year:number) : clubStandings.getDivisionResults {
-    return await clubStandings.getDivisionResults(this.httpHandler, divisionCode, year);
+    return await clubStandings.getDivisionResults(divisionCode, year);
   }
 
   async getTeams (year:number) : clubStandings.getTeams {
-    return await clubStandings.getTeams(this.httpHandler, year);
+    return await clubStandings.getTeams(year);
   }
 
   async getTeamAwards (
@@ -32,7 +25,7 @@ export default class NyrrApi {
     gender:string | null = null, 
     minimumAge:number | null = null
   ) : awards.getTeamAwards {
-    return await awards.getTeamAwards(this.httpHandler, eventCode, teamCode, gender, minimumAge);
+    return await awards.getTeamAwards(eventCode, teamCode, gender, minimumAge);
   }
 
   async getTeamAwardRunners (
@@ -41,7 +34,7 @@ export default class NyrrApi {
     teamGender:string | null = null, 
     teamMinimumAge:number | null = null
   ) : awards.getTeamAwardRunners {
-    return await awards.getTeamAwardRunners(this.httpHandler, eventCode, teamCode, teamGender, teamMinimumAge);
+    return await awards.getTeamAwardRunners(eventCode, teamCode, teamGender, teamMinimumAge);
   }
 
   async eventsSearch (
@@ -49,10 +42,6 @@ export default class NyrrApi {
     searchString:string = "",
     distance: string | null = null,
   ) : events.search {
-    return await events.search(this.httpHandler, year, searchString, distance);
-  }
-
-  static async getToken () : Promise<string> {
-    return await HttpHandler.getToken();
+    return await events.search(year, searchString, distance);
   }
 }

@@ -1,11 +1,11 @@
 import { z } from "zod";
-import HttpHandler from "./httpHandler";
+import postToNyrr from "./postToNyrr";
 
 const endpoint = 'ClubStandings';
 
 export type getYears = Promise<number[]>;
-export const getYears = async (httpHandler:HttpHandler) : getYears => {
-  const response = await httpHandler.postWithNyrrToken(`${endpoint}/getYears`, {});
+export const getYears = async () : getYears => {
+  const response = await postToNyrr(`${endpoint}/getYears`, {});
   const data = response.data.response.items;
   z.array(z.number()).parse(data);
 
@@ -38,14 +38,11 @@ export const teamResultsSchema = z.object({
 export type TeamResults = z.infer<typeof teamResultsSchema>;
 export type getDivisionResults = Promise<TeamResults[]>;
 
-export const getDivisionResults = async (httpHandler:HttpHandler, divisionCode:string, year:number) : getDivisionResults => {
-    const response = await httpHandler.postWithNyrrToken(
-      `${endpoint}/getDivisionResults`, 
-      { 
-        year,
-        divisionCode,
-      }
-    );
+export const getDivisionResults = async (divisionCode:string, year:number) : getDivisionResults => {
+    const response = await postToNyrr(`${endpoint}/getDivisionResults`, {
+      year,
+      divisionCode,
+    });
 
     const data = response.data.response.items;
     z.array(teamResultsSchema).parse(data);
@@ -65,13 +62,10 @@ export const divisionResultsSchema = z.object({
 export type DivisionResults = z.infer<typeof divisionResultsSchema>;
 export type getDivisionsResults = Promise<DivisionResults[]>;
 
-export const getDivisionsResults = async (httpHandler:HttpHandler, year:number) : getDivisionsResults => {
-  const response = await httpHandler.postWithNyrrToken(
-    `${endpoint}/getDivisionsResults`, 
-    { 
-      year,
-    }
-  );
+export const getDivisionsResults = async (year:number) : getDivisionsResults => {
+  const response = await postToNyrr(`${endpoint}/getDivisionsResults`, {
+    year,
+  });
 
   const data = response.data.response.items;
   z.array(divisionResultsSchema).parse(data);
@@ -86,11 +80,8 @@ export const teamSchema = z.object({
 export type Team = z.infer<typeof teamSchema>;
 export type getTeams = Promise<Team[]>;
 
-export const getTeams = async (httpHandler:HttpHandler ,year:number) : getTeams => {
-    const response = await httpHandler.postWithNyrrToken(
-      `${endpoint}/getTeams`, 
-      { year }
-    );
+export const getTeams = async (year:number) : getTeams => {
+    const response = await postToNyrr(`${endpoint}/getTeams`, { year });
 
     const data = response.data.response.items;
     z.array(teamSchema).parse(data);

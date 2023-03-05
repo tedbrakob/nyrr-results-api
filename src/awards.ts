@@ -1,5 +1,5 @@
 import { z } from "zod";
-import HttpHandler from "./httpHandler";
+import postToNyrr from "./postToNyrr";
 
 const endpoint = 'awards';
 
@@ -19,7 +19,6 @@ export type TeamAwards = z.infer<typeof teamAwardsSchema>;
 export type getTeamAwards = Promise<TeamAwards[]>;
 
 export const getTeamAwards = async (
-    httpHandler:HttpHandler,
     eventCode:string, 
     teamCode:string, 
     gender:string | null = null, 
@@ -43,7 +42,7 @@ export const getTeamAwards = async (
     postData.minimumAge = minimumAge.toString();
   }
 
-  const response = await httpHandler.postWithNyrrToken(
+  const response = await postToNyrr(
     `${endpoint}/teamAwards`,
     postData
   );
@@ -72,7 +71,6 @@ export type TeamAwardRunners = z.infer<typeof teamAwardRunnersSchema>;
 export type getTeamAwardRunners = Promise<TeamAwardRunners[]>;
 
 export const getTeamAwardRunners = async (
-  httpHandler:HttpHandler,
   eventCode:string, 
   teamCode:string, 
   teamGender:string | null = null, 
@@ -96,10 +94,7 @@ export const getTeamAwardRunners = async (
     postData.teamMinimumAge = teamMinimumAge.toString();
   }
 
-  const response = await httpHandler.postWithNyrrToken(
-    `${endpoint}/teamAwardRunners`,
-    postData
-  );
+  const response = await postToNyrr(`${endpoint}/teamAwardRunners`, postData);
 
   const data = response.data.response.items;
   z.array(teamAwardRunnersSchema).parse(data);
