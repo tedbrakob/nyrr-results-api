@@ -47,7 +47,7 @@ export const getTeamAwards = async (
     postData
   );
 
-  const data = response.data.response.items;
+  const data = response.data.items;
   z.array(teamAwardsSchema).parse(data);
 
   return data;
@@ -96,7 +96,7 @@ export const getTeamAwardRunners = async (
 
   const response = await postToNyrr(`${endpoint}/teamAwardRunners`, postData);
 
-  const data = response.data.response.items;
+  const data = response.data.items;
   z.array(teamAwardRunnersSchema).parse(data);
 
   return data;

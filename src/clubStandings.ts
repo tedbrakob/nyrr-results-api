@@ -6,7 +6,7 @@ const endpoint = 'ClubStandings';
 export type getYears = Promise<number[]>;
 export const getYears = async () : getYears => {
   const response = await postToNyrr(`${endpoint}/getYears`, {});
-  const data = response.data.response.items;
+  const data = response.data.years;
   z.array(z.number()).parse(data);
 
   return data;
@@ -44,7 +44,7 @@ export const getDivisionResults = async (divisionCode:string, year:number) : get
       divisionCode,
     });
 
-    const data = response.data.response.items;
+    const data = response.data.items;
     z.array(teamResultsSchema).parse(data);
 
     return data;
@@ -52,7 +52,7 @@ export const getDivisionResults = async (divisionCode:string, year:number) : get
 
 export const divisionResultsSchema = z.object({
   divisionCode: z.string(),
-  divisionGender: z.enum(["M", "F", "X"]),
+  divisionGender: z.enum(["M", "W", "X"]),
   divisionName: z.string(),
   divisionOrder: z.number(),
   teamResults: z.array(
@@ -67,7 +67,7 @@ export const getDivisionsResults = async (year:number) : getDivisionsResults => 
     year,
   });
 
-  const data = response.data.response.items;
+  const data = response.data.items;
   z.array(divisionResultsSchema).parse(data);
 
   return data;
@@ -83,7 +83,7 @@ export type getTeams = Promise<Team[]>;
 export const getTeams = async (year:number) : getTeams => {
     const response = await postToNyrr(`${endpoint}/getTeams`, { year });
 
-    const data = response.data.response.items;
+    const data = response.data.items;
     z.array(teamSchema).parse(data);
 
     return data

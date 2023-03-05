@@ -46,7 +46,7 @@ export const search = async (
     postData,
   );
 
-  const data = response.data.response.items;
+  const data = response.data.items;
   z.array(eventSchema).parse(data);
 
   if (response.data.response.totalItems > defaultPageSize) {
@@ -58,7 +58,7 @@ export const search = async (
       postData,
     );
 
-    const additionalEvents = additionalEventsResponse.data.response.items;
+    const additionalEvents = additionalEventsResponse.data.items;
     z.array(eventSchema).parse(additionalEvents);
 
     data.push(...additionalEvents);
