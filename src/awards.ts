@@ -12,7 +12,7 @@ export const teamAwardsSchema = z.object({
   "teamGender": z.string(),
   "minimumAge": z.number(),
   "summaryPlace": z.number(),
-  "summaryTime": z.string(),
+  "summaryTime": z.number(),
   "runnersCount": z.number(),
 });
 export type TeamAwards = z.infer<typeof teamAwardsSchema>;
@@ -64,7 +64,7 @@ export const teamAwardRunnersSchema = z.object({
   "stateProvince": z.string(),
   "country": z.string(),
   "iaaf": z.string(),
-  "finishTime": z.string(),
+  "finishTime": z.number(),
   "finishPlace": z.number(),
 });
 export type TeamAwardRunners = z.infer<typeof teamAwardRunnersSchema>;
